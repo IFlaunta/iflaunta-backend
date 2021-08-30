@@ -17,7 +17,7 @@ jobs:
     
     env:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-      DEBUG: ${{ secrets.DEBUG }}
+      DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
 
     steps:
     - uses: actions/checkout@v2
