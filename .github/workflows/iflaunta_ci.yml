@@ -16,7 +16,7 @@ jobs:
         python-version: [3.7]
     
     env:
-      SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DEBUG: ${{ secrets.DEBUG }}
 
     steps:
