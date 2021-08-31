@@ -30,6 +30,7 @@ DEBUG = (True if os.getenv("DJANGO_DEBUG")=="True" else False)
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'performance.User'
 
 # Application definition
 
