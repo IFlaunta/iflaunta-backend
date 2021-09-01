@@ -55,4 +55,11 @@ class PastPerformance(models.Model):
     understanding = models.IntegerField()
     confidence = models.IntegerField()
     performance_datetime = models.DateTimeField(auto_now_add=True)
-    # Rest Factors will be added later
+    '''
+    Rest Factors will be added later...
+    '''
+
+class PastPerformanceVideo(models.Model):
+    video_id = models.BigAutoField(primary_key=True, editable=False)
+    performance_id = models.OneToOneField(PastPerformance, related_name="pastPerformanceVideo", on_delete=models.CASCADE)
+    file = models.FileField(blank=False, null=False)

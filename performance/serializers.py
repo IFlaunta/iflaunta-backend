@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from performance.models import User, Question, PastPerformance
+from performance.models import User, Question, PastPerformance, PastPerformanceVideo
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class PastPerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PastPerformance
         fields = ['user_id', 'performance_id', 'question_id', 'concentration', 'eyecontact', 'clarity', 'understanding', 'confidence', 'performance_datetime']
+
+class PastPerformanceVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PastPerformanceVideo
+        fields = ['video_id', 'performance_id', 'file']
