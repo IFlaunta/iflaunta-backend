@@ -5,8 +5,8 @@ from rest_framework import status
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from performance.models import User
-from performance.serializers import UserSerializer
+from performance.models import User, Question
+from performance.serializers import UserSerializer, QuestionSerializer
 
 def remove_password(data):
     if(isinstance(data, dict)):
@@ -28,7 +28,7 @@ class addUser(APIView):
     
 class getUserFromEmail(APIView):
 
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, email):
         try:
@@ -42,7 +42,7 @@ class getUserFromEmail(APIView):
     
 class getUserFromUserId(APIView):
 
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, user_id):
         try:
@@ -54,5 +54,23 @@ class getUserFromUserId(APIView):
         remove_password(data)    # Removing hashed password
         return Response(data=data, status=status.HTTP_200_OK)
 
+class questionList(APIView):
 
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        questions = Question.objects.all()
+        serializers = QuestionSerializer(questions, many=True)
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        user = request.user
+        if(user==None or (not user.is_staff)):
+            return Response({"error": "Not AUthorised"}, status=status.HTTP_401_UNAUTHORIZED)
         
+        data = request.data
+        serializer = QuestionSerializer(data=data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data={"error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)

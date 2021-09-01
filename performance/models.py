@@ -39,7 +39,7 @@ class User(AbstractUser):
 
 class Question(models.Model):
     question_id = models.AutoField(primary_key=True, editable=False)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     description = models.TextField()
     keywords = models.TextField()   # Comma Separated words
     question_grade = models.CharField(max_length=50, default="0")   # Any weightage
