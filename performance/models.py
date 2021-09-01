@@ -44,3 +44,15 @@ class Question(models.Model):
     keywords = models.TextField()   # Comma Separated words
     question_grade = models.CharField(max_length=50, default="0")   # Any weightage
     tags = models.TextField()   # Comma Separated words
+
+class PastPerformance(models.Model):
+    user_id = models.ForeignKey(User, related_name="userPastPerformance", on_delete=models.CASCADE)
+    performance_id = models.BigAutoField(primary_key=True, editable=False)
+    question_id = models.ForeignKey(Question, related_name="performanceQuestion", on_delete=models.SET_NULL, null=True)
+    concentration = models.IntegerField()
+    eyecontact = models.IntegerField()
+    clarity = models.IntegerField()
+    understanding = models.IntegerField()
+    confidence = models.IntegerField()
+    performance_datetime = models.DateTimeField(auto_now_add=True)
+    # Rest Factors will be added later

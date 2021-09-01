@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from performance.models import User, Question
+from performance.models import User, Question, PastPerformance
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,3 +11,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ['question_id', 'title', 'description', 'keywords', 'question_grade', 'tags']
 
+class PastPerformanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PastPerformance
+        fields = ['user_id', 'performance_id', 'question_id', 'concentration', 'eyecontact', 'clarity', 'understanding', 'confidence', 'performance_datetime']
