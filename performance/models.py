@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractUser):
-    username = None
+    username = None     # https://docs.djangoproject.com/en/3.2/topics/db/models/#field-name-hiding-is-not-permitted
     user_id = models.AutoField(primary_key=True, editable=False)
     email = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=150)
@@ -36,4 +36,10 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-
+class Question(models.Model):
+    question_id = models.AutoField(primary_key=True, editable=False)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    keywords = models.TextField()   # Comma Separated words
+    question_grade = models.CharField(max_length=50, default="0")   # Any weightage
+    tags = models.TextField()   # Comma Separated words
