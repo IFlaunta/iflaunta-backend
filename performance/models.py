@@ -21,6 +21,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     password = models.CharField(max_length=255)
+    is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
 
