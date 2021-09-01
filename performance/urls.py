@@ -7,6 +7,7 @@ urlpatterns = [
     path('get_user_from_email/<email>/', views.getUserFromEmail.as_view(), name='get_user_from_email'),
     path('get_user_from_user_id/<int:user_id>/', views.getUserFromUserId.as_view(), name='get_user_from_user_id'),
 
-    path('question/', views.questionList.as_view(), name="question"),
+    path('question/<int:question_id>/', views.question.as_view(), name='question'),
+    path('question_list/', views.questionList.as_view(), name='question_list'),
 
 ]

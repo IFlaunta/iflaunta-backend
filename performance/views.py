@@ -74,3 +74,16 @@ class questionList(APIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data={"error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+
+class question(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, question_id):
+        try:
+            question = Question.objects.get(question_id=question_id)
+        except Question.DoesNotExist:
+            return Response(data={"error": "Question does not exist :("}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = QuestionSerializer(question)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
