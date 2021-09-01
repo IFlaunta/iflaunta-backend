@@ -1,9 +1,9 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from performance.models import User, Question
 from performance.serializers import UserSerializer, QuestionSerializer
@@ -120,3 +120,14 @@ class question(APIView):
         serializer = QuestionSerializer(question)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+class userLogOut(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        refresh_token = request.data.get("refresh_token")
+        if(refresh_token):
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(data={"message": "logged out!"}, status=status.HTTP_200_OK)
+        return Response(data={"error": "Please send refresh token."}, status=status.HTTP_400_BAD_REQUEST)

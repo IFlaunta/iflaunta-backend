@@ -11,4 +11,6 @@ urlpatterns = [
     path('question/<int:question_id>/', views.question.as_view(), name='question'),
     path('question_list/', views.questionList.as_view(), name='question_list'),
 
+    path('logout/', views.userLogOut.as_view(), name="user_logout"),
+
 ]
