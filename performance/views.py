@@ -20,14 +20,44 @@ class addUser(APIView):
         serializer = UserSerializer(data=data)
         if(serializer.is_valid()):
             user = serializer.save(password=make_password(data["password"]))
-            print(type(user))
             data = serializer.data
             remove_password(data)    # Removing hashed password
             return Response(data=data, status=status.HTTP_201_CREATED)
         return Response(data={"error": "Please enter valid data :("}, status=status.HTTP_400_BAD_REQUEST)
     
-class getUserFromEmail(APIView):
+def userPublicData(user):
+    '''
+    Function to get the public data of a user
+    
+    Currently, it is giving all the present data
+    '''
+    if(user):
+        data = UserSerializer(user).data
+        remove_password(data)
+        return data
+    return {}
 
+class getUser(APIView):
+    '''
+    View for getting all the data (private+public) of an authenticated user 
+    '''
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        try:
+            data = UserSerializer(user).data
+            remove_password(data)    # Removing hashed password
+            return Response(data=data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class getUserPublicDataFromEmail(APIView):
+    '''
+    View for getting all public data of a user with email
+
+    This view can be accessed by an authenticated user
+    '''
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, email):
@@ -36,12 +66,15 @@ class getUserFromEmail(APIView):
         except User.DoesNotExist:
             return Response(data={"error": "User does not exist :("}, status=status.HTTP_404_NOT_FOUND)
         
-        data = UserSerializer(user).data
-        remove_password(data)    # Removing hashed password        
+        data = userPublicData(user)
         return Response(data=data, status=status.HTTP_200_OK)
     
-class getUserFromUserId(APIView):
+class getUserPublicDataFromUserId(APIView):
+    '''
+    View for getting all public data of a user with user_id
 
+    This view can be accessed by an authenticated user
+    '''
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, user_id):
@@ -50,8 +83,7 @@ class getUserFromUserId(APIView):
         except User.DoesNotExist:
             return Response(data={"error": "User does not exist :("}, status=status.HTTP_404_NOT_FOUND)
         
-        data = UserSerializer(user).data
-        remove_password(data)    # Removing hashed password
+        data = userPublicData(user)
         return Response(data=data, status=status.HTTP_200_OK)
 
 class questionList(APIView):
@@ -87,3 +119,4 @@ class question(APIView):
 
         serializer = QuestionSerializer(question)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
