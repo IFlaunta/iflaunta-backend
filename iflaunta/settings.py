@@ -30,6 +30,7 @@ DEBUG = (True if os.getenv("DJANGO_DEBUG")=="True" else False)
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'performance.User'
 
 # Application definition
 
@@ -40,7 +41,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'performance.apps.PerformanceConfig',
+    'rest_framework_simplejwt'
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:8000',
+# )
+
+REST_FRAMEWORK = { 
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 
+        'rest_framework_simplejwt.authentication.JWTAuthentication', 
+    ], 
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'USER_ID_FIELD': 'user_id'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
