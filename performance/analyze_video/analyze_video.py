@@ -57,6 +57,9 @@ class AnalyzeVideo:
             pass
 
     def analyze_video(self):
+        '''
+        For analyzing the video using eye gazing
+        '''
         # Capturing the video from videofile
         cap = cv2.VideoCapture(self.videoLocation)
 
@@ -96,3 +99,8 @@ class AnalyzeVideo:
         if(total!=0):
             self.video_score = ceil(center/total)*100
     
+    def analyze(self):
+        self.get_audio()
+        self.analyze_audio()
+        self.analyze_video()
+        
