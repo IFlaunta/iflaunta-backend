@@ -142,8 +142,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,"media")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,"media")     # For storing the videos for users 
+ANALYSIS_VIDEOS_DIR = os.path.join(BASE_DIR, 'analysis_video_dir')     # For storing the videos for analysing 
+
+'''
+When the video storage for users have to be done on some other services like S3 or GCS
+django-storage module can be used and then make sure to remove MEDIA_ROOT.
+'''
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
