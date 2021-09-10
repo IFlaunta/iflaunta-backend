@@ -2,11 +2,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth.hashers import make_password
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
-from performance.models import User, Question
-from performance.serializers import UserSerializer, QuestionSerializer
+from .models import PastPerformance, User, Question, PastPerformanceVideo
+from .serializers import PastPerformanceSerializer, PastPerformanceVideoSerializer, UserSerializer, QuestionSerializer
+from .analyze_video.analyze_video import AnalyzeVideo
+
+ANALYSIS_VIDEOS_DIR = settings.ANALYSIS_VIDEOS_DIR
 
 def remove_password(data):
     if(isinstance(data, dict)):
@@ -131,3 +136,78 @@ class userLogOut(APIView):
             token.blacklist()
             return Response(data={"message": "logged out!"}, status=status.HTTP_200_OK)
         return Response(data={"error": "Please send refresh token."}, status=status.HTTP_400_BAD_REQUEST)
+
+class performanceList(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        try:
+            performances = user.pastperformance_set.all()
+            serializers = PastPerformanceSerializer(performances, many=True)
+            return Response(data=serializers.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request):
+        user = request.user
+        question_id = request.data.get("question_id")
+        file = request.FILES.get("file")
+
+        try:
+            # Storing video response for analysis
+            fs = FileSystemStorage(location=ANALYSIS_VIDEOS_DIR)
+            file_name = fs.save(file.name, file)
+            file_path = fs.path(file_name)
+
+            # Analysing the video response
+            vid = AnalyzeVideo(file_path)
+            vid.analyze()
+            confidence = vid.confidence
+            video_score = vid.video_score
+            # Clearing the files 
+            vid.clear()
+
+            # Calculating performance factors and saving performance
+            performance_data = {
+                "user_id": user.user_id,
+                "question_id": question_id, 
+                "concentration": int(0.6*confidence+0.4*video_score),
+                "eyecontact": video_score, 
+                "clarity": int(0.9*confidence),
+                "understanding": int(0.2*video_score+0.8*confidence), 
+                "confidence": int(0.9*confidence+0.1*video_score)
+            }
+            serializer = PastPerformanceSerializer(data=performance_data)
+            if(serializer.is_valid()):
+                serializer.save()
+                performance_data = serializer.data
+                performance_id = performance_data["performance_id"]
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+            # Checking whether response video has to be stored or not
+            if(not self.check_save_response(user.user_id)):
+                # If not, just return the current performance
+                return Response(data=performance_data, status=status.HTTP_201_CREATED)
+
+            # saving video response
+            video_data = {
+                "performance_id": performance_id, 
+                "file": file
+            }
+            serializer = PastPerformanceVideoSerializer(data=video_data)
+            if(serializer.is_valid()):
+                serializer.save()
+            return Response(data=performance_data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def check_save_response(self, user_id):
+        # Check if the user is granted the facility to store video
+        # ...
+        # For now, videos are not being stored
+        return True

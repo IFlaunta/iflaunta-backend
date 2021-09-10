@@ -5,6 +5,7 @@
 __pycache__
 *.sqlite3
 media
+analysis_video_dir
 
 # Backup files # 
 *.bak 
