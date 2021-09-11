@@ -6,6 +6,7 @@ colorama==0.4.4
 cycler==0.10.0
 decorator==4.4.2
 Django==3.2.6
+django-cleanup==5.2.0
 django-filter==2.4.0
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.8.0
