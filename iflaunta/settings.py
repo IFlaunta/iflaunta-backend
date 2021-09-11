@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'performance.apps.PerformanceConfig',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -141,9 +142,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,"media")     # For storing the videos for users 
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")                           # For storing the videos for users 
 ANALYSIS_VIDEOS_DIR = os.path.join(BASE_DIR, 'analysis_video_dir')     # For storing the videos for analysing 
 
 '''

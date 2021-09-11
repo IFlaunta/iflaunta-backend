@@ -229,3 +229,26 @@ class performance(APIView):
         
         serializer = PastPerformanceSerializer(performance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class performanceVideo(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, performance_id):
+        try:
+            performance = PastPerformance.objects.get(performance_id=performance_id)
+        except PastPerformance.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        if(performance.user_id_id!=user.user_id):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            performance_video = performance.pastPerformanceVideo
+        except Exception as e:
+            return Response(data={"error": "No video exists for this performance"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = PastPerformanceVideoSerializer(performance_video)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)    
+    
