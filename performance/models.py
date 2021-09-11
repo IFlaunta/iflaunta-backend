@@ -49,17 +49,21 @@ class PastPerformance(models.Model):
     user_id = models.ForeignKey(User, related_name="userPastPerformance", on_delete=models.CASCADE)
     performance_id = models.BigAutoField(primary_key=True, editable=False)
     question_id = models.ForeignKey(Question, related_name="performanceQuestion", on_delete=models.SET_NULL, null=True)
-    concentration = models.IntegerField()
-    eyecontact = models.IntegerField()
-    clarity = models.IntegerField()
-    understanding = models.IntegerField()
-    confidence = models.IntegerField()
+    concentration = models.IntegerField(default=0)
+    eyecontact = models.IntegerField(default=0)
+    clarity = models.IntegerField(default=0)
+    understanding = models.IntegerField(default=0)
+    confidence = models.IntegerField(default=0)
     performance_datetime = models.DateTimeField(auto_now_add=True)
     '''
     Rest Factors will be added later...
     '''
 
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'user_{0}/{1}'.format(instance.performance_id.user_id.user_id, filename)
+
 class PastPerformanceVideo(models.Model):
     video_id = models.BigAutoField(primary_key=True, editable=False)
     performance_id = models.OneToOneField(PastPerformance, related_name="pastPerformanceVideo", on_delete=models.CASCADE)
-    file = models.FileField(blank=False, null=False)
+    file = models.FileField(upload_to=user_directory_path)      # Storing files to folder with name as user_id

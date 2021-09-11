@@ -13,4 +13,8 @@ urlpatterns = [
 
     path('logout/', views.userLogOut.as_view(), name="user_logout"),
 
+    path('performance_list/', views.performanceList.as_view(), name="performance_list"),
+    path('performance/<int:performance_id>/', views.performance.as_view(), name="performance"),
+    path('performance_video/<int:performance_id>/', views.performanceVideo.as_view(), name="performance_video"),
+    
 ]
