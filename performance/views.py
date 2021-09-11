@@ -1,3 +1,4 @@
+from requests import api
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -210,4 +211,21 @@ class performanceList(APIView):
         # Check if the user is granted the facility to store video
         # ...
         # For now, videos are not being stored
-        return True
+        return False
+
+class performance(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, performance_id):
+        try:
+            performance = PastPerformance.objects.get(performance_id=performance_id)
+        except PastPerformance.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        if(performance.user_id_id!=user.user_id):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
+        serializer = PastPerformanceSerializer(performance)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
