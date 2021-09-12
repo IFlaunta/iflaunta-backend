@@ -71,6 +71,21 @@ This repository contains the backend and AI related stuff.
     DJANGO_DEBUG = True
     ```
 
+* Configure the Storage Service where the videos will be stored
+
+  * If storage service has to be on Server only then do nothing
+
+  * If storage service is `S3` then put the following in the above `.env` file as:
+
+    ```bash
+    STORAGE_SERVICE = S3
+    AWS_ACCESS_KEY_ID = <your access key>
+    AWS_SECRET_ACCESS_KEY = <your secret key>
+    AWS_STORAGE_BUCKET_NAME = <your bucket name>
+    AWS_S3_SIGNATURE_VERSION = s3v4
+    AWS_S3_REGION_NAME = <region code>
+    ```
+
 <!--
   * While putting `DEBUG = False`, remember to modify `ALLOWED_HOSTS` (for just quick reference, modify as `ALLOWED_HOSTS = ['*']`)
 

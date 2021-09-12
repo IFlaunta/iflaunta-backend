@@ -137,6 +137,26 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Configuring STORAGE_SERVICE
+
+STORAGE_SERVICE = os.getenv("STORAGE_SERVICE")
+
+if(STORAGE_SERVICE=='S3'):
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_SIGNATURE_VERSION = os.getenv("AWS_S3_SIGNATURE_VERSION")
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+    AWS_S3_VERIFY = True
+    AWS_QUERYSTRING_AUTH = True # Set to False for only getting url without other factors making the url publicly accessible
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -144,14 +164,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")                           # For storing the videos for users 
-ANALYSIS_VIDEOS_DIR = os.path.join(BASE_DIR, 'analysis_video_dir')     # For storing the videos for analysing 
-
-'''
-When the video storage for users have to be done on some other services like S3 or GCS
-django-storage module can be used and then make sure to remove MEDIA_ROOT.
-'''
+# For storing the videos temporarily for analysing
+ANALYSIS_VIDEOS_DIR = os.path.join(BASE_DIR, 'analysis_video_dir')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
