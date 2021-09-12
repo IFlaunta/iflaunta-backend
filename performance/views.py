@@ -8,8 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 
-from .models import PastPerformance, User, Question, PastPerformanceVideo
-from .serializers import PastPerformanceSerializer, PastPerformanceVideoSerializer, UserSerializer, QuestionSerializer
+from .models import Performance, User, Question, PerformanceVideo
+from .serializers import PerformanceSerializer, PerformanceVideoSerializer, UserSerializer, QuestionSerializer
 from .analyze_video.analyze_video import AnalyzeVideo
 
 ANALYSIS_VIDEOS_DIR = settings.ANALYSIS_VIDEOS_DIR
@@ -145,8 +145,8 @@ class performanceList(APIView):
     def get(self, request):
         user = request.user
         try:
-            performances = user.pastperformance_set.all()
-            serializers = PastPerformanceSerializer(performances, many=True)
+            performances = user.userPerformance.all()
+            serializers = PerformanceSerializer(performances, many=True)
             return Response(data=serializers.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -172,15 +172,15 @@ class performanceList(APIView):
 
             # Calculating performance factors and saving performance
             performance_data = {
-                "user_id": user.user_id,
-                "question_id": question_id, 
+                "user": user.user_id,
+                "question": question_id, 
                 "concentration": int(0.6*confidence+0.4*video_score),
                 "eyecontact": video_score, 
                 "clarity": int(0.9*confidence),
                 "understanding": int(0.2*video_score+0.8*confidence), 
                 "confidence": int(0.9*confidence+0.1*video_score)
             }
-            serializer = PastPerformanceSerializer(data=performance_data)
+            serializer = PerformanceSerializer(data=performance_data)
             if(serializer.is_valid()):
                 serializer.save()
                 performance_data = serializer.data
@@ -195,10 +195,10 @@ class performanceList(APIView):
 
             # saving video response
             video_data = {
-                "performance_id": performance_id, 
+                "performance": performance_id, 
                 "file": file
             }
-            serializer = PastPerformanceVideoSerializer(data=video_data)
+            serializer = PerformanceVideoSerializer(data=video_data)
             if(serializer.is_valid()):
                 serializer.save()
             return Response(data=performance_data, status=status.HTTP_201_CREATED)
@@ -219,15 +219,15 @@ class performance(APIView):
 
     def get(self, request, performance_id):
         try:
-            performance = PastPerformance.objects.get(performance_id=performance_id)
-        except PastPerformance.DoesNotExist:
+            performance = Performance.objects.get(performance_id=performance_id)
+        except Performance.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         user = request.user
-        if(performance.user_id_id!=user.user_id):
+        if(performance.user_id!=user.user_id):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         
-        serializer = PastPerformanceSerializer(performance)
+        serializer = PerformanceSerializer(performance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class performanceVideo(APIView):
@@ -236,19 +236,19 @@ class performanceVideo(APIView):
 
     def get(self, request, performance_id):
         try:
-            performance = PastPerformance.objects.get(performance_id=performance_id)
-        except PastPerformance.DoesNotExist:
+            performance = Performance.objects.get(performance_id=performance_id)
+        except Performance.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         user = request.user
-        if(performance.user_id_id!=user.user_id):
+        if(performance.user_id!=user.user_id):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         
         try:
-            performance_video = performance.pastPerformanceVideo
+            performance_video = performance.performanceVideo
         except Exception as e:
             return Response(data={"error": "No video exists for this performance"}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = PastPerformanceVideoSerializer(performance_video)
+        serializer = PerformanceVideoSerializer(performance_video)
         return Response(data=serializer.data, status=status.HTTP_200_OK)    
     

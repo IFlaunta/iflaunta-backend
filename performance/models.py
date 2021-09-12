@@ -45,10 +45,10 @@ class Question(models.Model):
     question_grade = models.CharField(max_length=50, default="0")   # Any weightage
     tags = models.TextField()   # Comma Separated words
 
-class PastPerformance(models.Model):
-    user_id = models.ForeignKey(User, related_name="userPastPerformance", on_delete=models.CASCADE)
+class Performance(models.Model):
+    user = models.ForeignKey(User, related_name="userPerformance", on_delete=models.CASCADE)
     performance_id = models.BigAutoField(primary_key=True, editable=False)
-    question_id = models.ForeignKey(Question, related_name="performanceQuestion", on_delete=models.SET_NULL, null=True)
+    question = models.ForeignKey(Question, related_name="performanceQuestion", on_delete=models.SET_NULL, null=True)
     concentration = models.IntegerField(default=0)
     eyecontact = models.IntegerField(default=0)
     clarity = models.IntegerField(default=0)
@@ -61,9 +61,9 @@ class PastPerformance(models.Model):
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'user_{0}/{1}'.format(instance.performance_id.user_id.user_id, filename)
+    return 'user_{0}/{1}'.format(instance.performance.user.user_id, filename)
 
-class PastPerformanceVideo(models.Model):
+class PerformanceVideo(models.Model):
     video_id = models.BigAutoField(primary_key=True, editable=False)
-    performance_id = models.OneToOneField(PastPerformance, related_name="pastPerformanceVideo", on_delete=models.CASCADE)
+    performance = models.OneToOneField(Performance, related_name="performanceVideo", on_delete=models.CASCADE)
     file = models.FileField(upload_to=user_directory_path)      # Storing files to folder with name as user_id
