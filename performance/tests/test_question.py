@@ -87,7 +87,7 @@ class QuestionListModelViewTest(APITestCase):
         # First removing the authenticated user
         self.client.force_authenticate(user=None)
 
-        # Getting a valid question with quetion_id=1 with an unauthneticated user
+        # Getting valid question list with an unauthneticated user
         response = self.client.get(reverse("performance:question_list"))
         self.assertEqual(response.status_code, 401)
     
@@ -132,7 +132,7 @@ class QuestionListModelViewTest(APITestCase):
         self.assertEqual(response.status_code, 401)
 
         data = response.data
-        self.assertEqual(data["error"], "Not AUthorised")
+        self.assertEqual(data["error"], "Not Authorised")
     
     def test_post_question_list_with_unautneticated_user_invalid(self):
         # First removing the authenticated user

@@ -104,7 +104,7 @@ class questionList(APIView):
     def post(self, request):
         user = request.user
         if(user==None or (not user.is_staff)):
-            return Response({"error": "Not AUthorised"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Not Authorised"}, status=status.HTTP_401_UNAUTHORIZED)
         
         data = request.data
         serializer = QuestionSerializer(data=data)
