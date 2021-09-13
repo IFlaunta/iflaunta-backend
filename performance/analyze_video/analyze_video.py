@@ -32,11 +32,12 @@ class AnalyzeVideo:
         '''
         # Keeping the audio file name same as the video file, 
         # just changing the externsion to wav
-        audioLocation = self.videoLocation[0:self.videoLocation.rindex(".")]+".wav"
+        self.audioLocation = self.videoLocation[0:self.videoLocation.rindex(".")]+".wav"
         video_clip = mp.VideoFileClip(self.videoLocation)
-        video_clip.audio.write_audiofile(audioLocation)
+        if(video_clip.reader.infos["audio_found"]):
+            # If audio found
+            video_clip.audio.write_audiofile(self.audioLocation)
         video_clip.close()
-        self.audioLocation = audioLocation
     
     def analyze_audio(self):
         '''
@@ -119,10 +120,18 @@ class AnalyzeVideo:
     def analyze(self):
         try:
             self.get_audio()
+        except Exception as e:
+            print("{}, occurred in get_audio method".format(e.__class__))
+        
+        try:
             self.analyze_audio()
+        except Exception as e:
+            print("{}, occurred in analyze_audio method".format(e.__class__))
+
+        try:
             self.analyze_video()
         except Exception as e:
-            print("{}, occurred in analyze method".format(e.__class__))
+            print("{}, occurred in analyze_video method".format(e.__class__))
     
     def clear(self):
         '''
@@ -130,7 +139,12 @@ class AnalyzeVideo:
         '''
         try:
             os.remove(self.videoLocation)
+        except Exception as e:
+            print("{}, occurred in videoLocation clear method".format(e))
+            pass
+
+        try:
             os.remove(self.audioLocation)
         except Exception as e:
-            print("{}, occurred in clear method".format(e))
+            print("{}, occurred in audioLocation clear method".format(e))
             pass
