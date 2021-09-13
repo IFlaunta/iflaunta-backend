@@ -189,7 +189,7 @@ class performanceList(APIView):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             
             # Checking whether response video has to be stored or not
-            if(not self.check_save_response(user.user_id)):
+            if(not self.check_save_response(user)):
                 # If not, just return the current performance
                 return Response(data=performance_data, status=status.HTTP_201_CREATED)
 
@@ -207,11 +207,11 @@ class performanceList(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
 
-    def check_save_response(self, user_id):
+    def check_save_response(self, user):
         # Check if the user is granted the facility to store video
         # ...
         # For now, videos are not being stored
-        return False
+        return user.save_video
 
 class performance(APIView):
 
