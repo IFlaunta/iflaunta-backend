@@ -4,7 +4,7 @@ from performance.models import User, Question, Performance, PerformanceVideo
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['user_id', 'first_name', 'last_name', 'email', 'password', 'is_staff']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'password', 'is_staff', 'save_video']
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
