@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import django_heroku
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -185,5 +184,9 @@ IBM_API_KEY = os.getenv("IBM_API_KEY")
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
+HEROKU_DEPLOYMENT = (True if os.getenv("HEROKU_DEPLOYMENT")=="True" else False)
+
+if(HEROKU_DEPLOYMENT):
+    # Activate Django-Heroku.
+    import django_heroku
+    django_heroku.settings(locals())
