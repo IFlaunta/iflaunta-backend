@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import django_heroku
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -29,7 +30,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (True if os.getenv("DJANGO_DEBUG")=="True" else False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['iflaunta.herokuapp.com']
 
 SESSION_COOKIE_SECURE = (True if os.getenv("DJANGO_SESSION_COOKIE_SECURE")=="True" else False)
 
@@ -183,3 +184,6 @@ IBM_API_KEY = os.getenv("IBM_API_KEY")
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
