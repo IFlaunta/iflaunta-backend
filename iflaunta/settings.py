@@ -31,6 +31,10 @@ DEBUG = (True if os.getenv("DJANGO_DEBUG")=="True" else False)
 
 ALLOWED_HOSTS = []
 
+SESSION_COOKIE_SECURE = (True if os.getenv("DJANGO_SESSION_COOKIE_SECURE")=="True" else False)
+
+CSRF_COOKIE_SECURE = (True if os.getenv("DJANGO_CSRF_COOKIE_SECURE")=="True" else False)
+
 AUTH_USER_MODEL = 'performance.User'
 
 # Application definition
