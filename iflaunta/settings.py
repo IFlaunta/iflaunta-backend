@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (True if os.getenv("DJANGO_DEBUG")=="True" else False)
 
-ALLOWED_HOSTS = ['iflaunta.herokuapp.com']
+ALLOWED_HOSTS = ['iflaunta.herokuapp.com', '127.0.0.1']
 
 SESSION_COOKIE_SECURE = (True if os.getenv("DJANGO_SESSION_COOKIE_SECURE")=="True" else False)
 
