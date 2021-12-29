@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +29,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (True if os.getenv("DJANGO_DEBUG")=="True" else False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['iflaunta.herokuapp.com', '127.0.0.1']
+
+SESSION_COOKIE_SECURE = (True if os.getenv("DJANGO_SESSION_COOKIE_SECURE")=="True" else False)
+
+CSRF_COOKIE_SECURE = (True if os.getenv("DJANGO_CSRF_COOKIE_SECURE")=="True" else False)
 
 AUTH_USER_MODEL = 'performance.User'
 
@@ -65,6 +70,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -174,3 +180,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 IBM_URL = os.getenv("IBM_URL")
 IBM_API_KEY = os.getenv("IBM_API_KEY")
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+HEROKU_DEPLOYMENT = (True if os.getenv("HEROKU_DEPLOYMENT")=="True" else False)
+
+if(HEROKU_DEPLOYMENT):
+    # Activate Django-Heroku.
+    import django_heroku
+    django_heroku.settings(locals())
